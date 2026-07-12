@@ -1,0 +1,355 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "amazonas",
+        "name": "Amazonas",
+        "region_code": "01"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-78.5, -6.5], [-77.5, -6.5], [-77.5, -3.5], [-78.5, -3.5], [-78.5, -6.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ancash",
+        "name": "Áncash",
+        "region_code": "02"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-78.0, -10.0], [-77.0, -10.0], [-77.0, -8.5], [-78.0, -8.5], [-78.0, -10.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "apurimac",
+        "name": "Apurímac",
+        "region_code": "03"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.5, -14.5], [-72.5, -14.5], [-72.5, -13.0], [-73.5, -13.0], [-73.5, -14.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "arequipa",
+        "name": "Arequipa",
+        "region_code": "04"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.0, -17.0], [-71.0, -17.0], [-71.0, -15.0], [-73.0, -15.0], [-73.0, -17.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ayacucho",
+        "name": "Ayacucho",
+        "region_code": "05"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.0, -15.0], [-73.5, -15.0], [-73.5, -12.5], [-75.0, -12.5], [-75.0, -15.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cajamarca",
+        "name": "Cajamarca",
+        "region_code": "06"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-79.5, -7.5], [-78.0, -7.5], [-78.0, -5.0], [-79.5, -5.0], [-79.5, -7.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "callao",
+        "name": "Callao",
+        "region_code": "07"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.2, -12.1], [-77.0, -12.1], [-77.0, -11.9], [-77.2, -11.9], [-77.2, -12.1]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "cusco",
+        "name": "Cusco",
+        "region_code": "08"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.0, -14.5], [-71.0, -14.5], [-71.0, -11.5], [-73.0, -11.5], [-73.0, -14.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "huancavelica",
+        "name": "Huancavelica",
+        "region_code": "09"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.5, -13.5], [-74.5, -13.5], [-74.5, -12.0], [-75.5, -12.0], [-75.5, -13.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "huanuco",
+        "name": "Huánuco",
+        "region_code": "10"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.5, -10.5], [-75.0, -10.5], [-75.0, -8.5], [-76.5, -8.5], [-76.5, -10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ica",
+        "name": "Ica",
+        "region_code": "11"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.0, -15.5], [-75.0, -15.5], [-75.0, -13.5], [-76.0, -13.5], [-76.0, -15.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "junin",
+        "name": "Junín",
+        "region_code": "12"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.0, -12.5], [-74.5, -12.5], [-74.5, -10.5], [-76.0, -10.5], [-76.0, -12.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "lalibertad",
+        "name": "La Libertad",
+        "region_code": "13"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-79.0, -9.0], [-77.5, -9.0], [-77.5, -7.0], [-79.0, -7.0], [-79.0, -9.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "lambayeque",
+        "name": "Lambayeque",
+        "region_code": "14"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-80.0, -7.0], [-79.0, -7.0], [-79.0, -5.5], [-80.0, -5.5], [-80.0, -7.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "lima",
+        "name": "Lima",
+        "region_code": "15"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.5, -13.0], [-76.0, -13.0], [-76.0, -10.5], [-77.5, -10.5], [-77.5, -13.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "loreto",
+        "name": "Loreto",
+        "region_code": "16"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.0, -6.0], [-73.0, -6.0], [-73.0, -1.0], [-76.0, -1.0], [-76.0, -6.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "madrededios",
+        "name": "Madre de Dios",
+        "region_code": "17"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.5, -13.5], [-69.0, -13.5], [-69.0, -10.0], [-71.5, -10.0], [-71.5, -13.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "moquegua",
+        "name": "Moquegua",
+        "region_code": "18"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.5, -17.5], [-70.0, -17.5], [-70.0, -16.0], [-71.5, -16.0], [-71.5, -17.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "pasco",
+        "name": "Pasco",
+        "region_code": "19"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-76.0, -11.0], [-75.0, -11.0], [-75.0, -9.5], [-76.0, -9.5], [-76.0, -11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "piura",
+        "name": "Piura",
+        "region_code": "20"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-81.0, -6.0], [-79.0, -6.0], [-79.0, -4.0], [-81.0, -4.0], [-81.0, -6.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "puno",
+        "name": "Puno",
+        "region_code": "21"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-71.0, -17.0], [-68.5, -17.0], [-68.5, -13.5], [-71.0, -13.5], [-71.0, -17.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "sanmartin",
+        "name": "San Martín",
+        "region_code": "22"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-77.5, -8.5], [-76.0, -8.5], [-76.0, -5.5], [-77.5, -5.5], [-77.5, -8.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tacna",
+        "name": "Tacna",
+        "region_code": "23"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-70.5, -18.5], [-69.5, -18.5], [-69.5, -17.0], [-70.5, -17.0], [-70.5, -18.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "tumbes",
+        "name": "Tumbes",
+        "region_code": "24"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-80.5, -4.5], [-80.0, -4.5], [-80.0, -3.3], [-80.5, -3.3], [-80.5, -4.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "ucayali",
+        "name": "Ucayali",
+        "region_code": "25"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.0, -11.0], [-73.0, -11.0], [-73.0, -7.5], [-75.0, -7.5], [-75.0, -11.0]
+        ]]
+      }
+    }
+  ]
+}

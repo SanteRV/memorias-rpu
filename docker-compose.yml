@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: intercambio_rpu_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Definir DB_PASSWORD en .env}
+      POSTGRES_DB: intercambio_nacional
+    volumes:
+      - intercambio_rpu_postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # Solo accesible desde el propio servidor (usar túnel SSH para pgAdmin:
+    # ssh -L 5433:localhost:5433 usuario@servidor)
+    ports:
+      - "127.0.0.1:5433:5432"
+    networks:
+      - intercambio_rpu_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: intercambio_rpu_backend
+    restart: unless-stopped
+    environment:
+      DB_USER: postgres
+      DB_HOST: postgres
+      DB_NAME: intercambio_nacional
+      DB_PASSWORD: ${DB_PASSWORD:?Definir DB_PASSWORD en .env}
+      DB_PORT: 5432
+      PORT: 3006
+      NODE_ENV: production
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - intercambio_rpu_network
+    volumes:
+      - ./server/uploads:/app/uploads
+
+  # Frontend React
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_URL: https://api_rpu.duckterv.com/api
+    container_name: intercambio_rpu_frontend
+    restart: unless-stopped
+    ports:
+      - "3005:80"
+    depends_on:
+      - backend
+    networks:
+      - intercambio_rpu_network
+
+volumes:
+  intercambio_rpu_postgres_data:
+
+networks:
+  intercambio_rpu_network:
+    driver: bridge
