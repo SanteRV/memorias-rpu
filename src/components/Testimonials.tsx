@@ -38,22 +38,16 @@ export function Testimonials() {
   const fetchTestimonials = async () => {
     try {
       setIsLoading(true);
-      console.log('Fetching testimonials from:', `${API_URL}/experiencias`);
       const response = await fetch(`${API_URL}/experiencias`);
       const data = await response.json();
 
-      console.log('Response data:', data);
-      console.log('Testimonials length:', data.data?.length);
-
       if (data.success) {
         setTestimonials(data.data);
-        console.log('Testimonials set:', data.data);
       }
     } catch (error) {
       console.error('Error al cargar testimonios:', error);
     } finally {
       setIsLoading(false);
-      console.log('Loading finished');
     }
   };
 
@@ -61,8 +55,6 @@ export function Testimonials() {
   const getGradient = (index: number) => {
     return GRADIENTS[index % GRADIENTS.length];
   };
-
-  console.log('RENDER - isLoading:', isLoading, 'testimonials.length:', testimonials.length);
 
   return (
     <section className="py-20 px-6 bg-gradient-to-br from-[var(--color-primary)] via-blue-900 to-[var(--color-primary)]">

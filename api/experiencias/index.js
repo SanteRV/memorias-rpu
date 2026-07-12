@@ -7,6 +7,44 @@ const { query } = require('../_lib/db');
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
 const ALLOWED_TYPES = /jpeg|jpg|png|gif|webp/;
 
+// Rate limiting por IP para POST. Vive en memoria de la instancia:
+// se reinicia en cada cold start, suficiente para frenar spam básico.
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
+const RATE_MAX_POSTS = 10;
+const postLog = new Map();
+
+function isRateLimited(req) {
+  const ip =
+    req.headers['x-real-ip'] ||
+    String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
+    'unknown';
+  const now = Date.now();
+  const recent = (postLog.get(ip) || []).filter(
+    (t) => now - t < RATE_WINDOW_MS
+  );
+  if (recent.length >= RATE_MAX_POSTS) return true;
+  recent.push(now);
+  postLog.set(ip, recent);
+  if (postLog.size > 5000) postLog.clear(); // tope de memoria
+  return false;
+}
+
+// Verifica que el contenido del archivo sea realmente una imagen
+// (magic bytes), no solo que la extensión lo diga.
+function isRealImage(buffer) {
+  if (!buffer || buffer.length < 12) return false;
+  const jpg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  const png =
+    buffer[0] === 0x89 && buffer[1] === 0x50 &&
+    buffer[2] === 0x4e && buffer[3] === 0x47;
+  const gif =
+    buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46;
+  const webp =
+    buffer[8] === 0x57 && buffer[9] === 0x45 &&
+    buffer[10] === 0x42 && buffer[11] === 0x50;
+  return jpg || png || gif || webp;
+}
+
 function sanitizeInput(str) {
   if (typeof str !== 'string') return str;
   return str.trim().replace(/[<>]/g, '').substring(0, 500);
@@ -76,6 +114,13 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'POST') {
+      if (isRateLimited(req)) {
+        return res.status(429).json({
+          success: false,
+          message: 'Demasiadas solicitudes, intente de nuevo más tarde'
+        });
+      }
+
       const rawBody = await readRawBody(req);
       const { fields, file, fileTooBig } = await parseMultipart(req, rawBody);
 
@@ -114,6 +159,13 @@ module.exports = async (req, res) => {
         return res.status(400).json({
           success: false,
           message: 'La experiencia debe tener entre 10 y 500 caracteres'
+        });
+      }
+
+      if (file && !file.invalid && !isRealImage(file.buffer)) {
+        return res.status(400).json({
+          success: false,
+          message: 'El archivo no es una imagen válida'
         });
       }
 
