@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Upload, Camera, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const DEPARTAMENTOS_PERU = [
   'Amazonas',
@@ -47,9 +47,16 @@ export function UploadPhoto() {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const MAX_FILE_SIZE = 4 * 1024 * 1024; // límite de body en Vercel
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        showNotification('error', 'La foto supera el tamaño máximo de 4MB');
+        e.target.value = "";
+        return;
+      }
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -174,7 +181,7 @@ export function UploadPhoto() {
                     <p className="mb-2 text-[var(--color-primary)]">
                       Haz clic para subir una foto
                     </p>
-                    <p className="text-gray-500">PNG, JPG hasta 10MB</p>
+                    <p className="text-gray-500">PNG, JPG hasta 4MB</p>
                   </div>
                 )}
                 <input

@@ -11,7 +11,7 @@ interface Experiencia {
   created_at: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Array de gradientes para rotar entre las cards
 const GRADIENTS = [

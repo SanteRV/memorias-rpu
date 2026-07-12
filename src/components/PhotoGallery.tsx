@@ -27,7 +27,7 @@ interface PhotoType {
   isStatic: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export function PhotoGallery() {
   const [uploadedPhotos, setUploadedPhotos] = useState<Experiencia[]>([]);
@@ -117,15 +117,14 @@ export function PhotoGallery() {
     }
   ];
 
-  // Convertir fotos subidas al formato de la galería
+  // Convertir fotos subidas al formato de la galería.
+  // Las fotos en Vercel Blob ya vienen como URL absoluta; las antiguas
+  // (/uploads/...) se resuelven contra el servidor de la API.
   const dynamicPhotos = uploadedPhotos.map(photo => {
-    // Remover /api del final de la URL
     const baseUrl = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
-    const imageUrl = `${baseUrl}${photo.foto_url}`;
-    console.log('API_URL:', API_URL);
-    console.log('Base URL:', baseUrl);
-    console.log('foto_url:', photo.foto_url);
-    console.log('Final image URL:', imageUrl);
+    const imageUrl = photo.foto_url?.startsWith('http')
+      ? photo.foto_url
+      : `${baseUrl}${photo.foto_url}`;
     return {
       url: imageUrl,
       alt: `${photo.nombre} - ${photo.departamento}`,
