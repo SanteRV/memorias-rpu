@@ -17,7 +17,7 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-6 bg-[var(--color-primary)]">
+    <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-6 bg-[var(--color-primary)]">
       {/* Geometric Background Pattern */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Organic wave pattern - Animated */}

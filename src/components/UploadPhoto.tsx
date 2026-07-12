@@ -114,7 +114,7 @@ export function UploadPhoto() {
 
 
   return (
-    <section className="py-20 px-6 bg-[var(--color-primary)]">
+    <section id="comparte" className="py-20 px-6 bg-[var(--color-primary)]">
       <div className="max-w-6xl mx-auto">
         {/* Notificaciones */}
         <AnimatePresence>

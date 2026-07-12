@@ -51,3 +51,12 @@ p {
 * {
   box-sizing: border-box;
 }
+
+/* Navegación por anclas con la navbar fija */
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 72px;
+}
