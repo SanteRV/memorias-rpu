@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
-import { Heart, MapIcon } from "lucide-react";
-import { PeruMap3D } from "./PeruMap3DHybrid";
+import { Heart } from "lucide-react";
 
 export function Footer() {
 
@@ -58,26 +57,6 @@ export function Footer() {
               "termina cuando dejamos de recordar."
             </p>
           </motion.div>
-
-          {/* 3D Interactive Map */}
-          {/* <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="mb-16"
-          >
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <MapIcon className="text-[var(--color-accent)]" size={32} />
-              <h3 className="text-white text-2xl font-bold">
-                Mapa Interactivo del Perú
-              </h3>
-            </div>
-            <p className="text-white/80 text-center mb-8 max-w-2xl mx-auto">
-              Explora las regiones del Perú en 3D. Haz clic en cualquier región para ver más detalles.
-            </p>
-            <PeruMap3D />
-          </motion.div> */}
 
           {/* Organization Info */}
           <motion.div
