@@ -486,6 +486,8 @@ export function Hero() {
                 <Image
                   src={rpuImage}
                   alt="Intercambio Nacional"
+                  loading="eager"
+                  fetchPriority="high"
                   className="w-full h-auto object-contain relative z-10"
                   style={{ transform: "rotate(0deg)" }}
                 />

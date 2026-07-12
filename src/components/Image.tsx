@@ -61,6 +61,8 @@ export function Image({ src, alt, className, fallbackClassName, ...props }: Imag
       <img
         src={src}
         alt={alt}
+        loading="lazy"
+        decoding="async"
         className={cn(className, isLoading && 'opacity-0')}
         onError={handleError}
         onLoad={handleLoad}

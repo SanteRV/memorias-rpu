@@ -22,8 +22,7 @@ export function BackgroundMusic() {
         audioRef.current.play().then(() => {
           setIsPlaying(true);
         }).catch((error) => {
-          console.log('Error al reproducir:', error);
-          alert('Haz clic en el botón de música para reproducir');
+          console.error('Error al reproducir:', error);
         });
       }
     }
@@ -31,11 +30,12 @@ export function BackgroundMusic() {
 
   return (
     <>
+      {/* preload="none": el mp3 (varios MB) solo se descarga al dar play */}
       <audio
         ref={audioRef}
         src={musicaFondo}
         loop
-        preload="auto"
+        preload="none"
       />
 
       <motion.button
