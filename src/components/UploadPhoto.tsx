@@ -39,6 +39,7 @@ export function UploadPhoto() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
   // Función para mostrar notificaciones
@@ -74,6 +75,11 @@ export function UploadPhoto() {
       return;
     }
 
+    if (!consent) {
+      showNotification('error', 'Debes aceptar que tu experiencia se muestre públicamente');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -99,6 +105,7 @@ export function UploadPhoto() {
         setName("");
         setCaption("");
         setLocation("");
+        setConsent(false);
         const fileInput = document.getElementById("photo-upload") as HTMLInputElement;
         if (fileInput) fileInput.value = "";
       } else {
@@ -244,9 +251,24 @@ export function UploadPhoto() {
               />
             </div>
 
+            {/* Consentimiento (Ley N° 29733 de Protección de Datos Personales) */}
+            <label className="mb-6 flex items-start gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-1 h-5 w-5 shrink-0 accent-[var(--color-accent)] cursor-pointer"
+              />
+              <span className="text-sm text-gray-600 leading-relaxed">
+                Acepto que mi nombre, mi foto y mi experiencia se muestren
+                públicamente en esta página. Puedo pedir que se eliminen en
+                cualquier momento.
+              </span>
+            </label>
+
             <button
               type="submit"
-              disabled={!previewUrl || !name || !location || !caption || isSubmitting}
+              disabled={!previewUrl || !name || !location || !caption || !consent || isSubmitting}
               className="w-full py-4 rounded-xl font-semibold transition-all hover:shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 bg-[var(--color-accent)] border-2 border-[var(--color-accent)]"
               style={{
                 minHeight: '56px',

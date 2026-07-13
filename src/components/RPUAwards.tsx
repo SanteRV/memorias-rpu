@@ -336,7 +336,7 @@ export function RPUAwards() {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-[var(--color-primary)] via-purple-900 to-pink-900 py-20 px-6 overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-br from-[var(--color-primary)] via-purple-900 to-pink-900 py-20 px-4 sm:px-6 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -453,11 +453,11 @@ export function RPUAwards() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentAward.id}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 md:p-12 border-2 border-white/20 shadow-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white/10 backdrop-blur-lg rounded-3xl p-4 sm:p-8 md:p-12 border-2 border-white/20 shadow-2xl"
           >
             {/* Category Title */}
             <motion.div
@@ -467,7 +467,7 @@ export function RPUAwards() {
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
               <motion.div
-                className="text-8xl mb-4"
+                className="text-6xl sm:text-8xl mb-4"
                 animate={{
                   rotate: [0, -10, 10, -10, 0],
                 }}
@@ -479,45 +479,45 @@ export function RPUAwards() {
               >
                 {currentAward.emoji}
               </motion.div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2 px-2 break-words">
                 {currentAward.title}
               </h2>
             </motion.div>
 
             {/* Podium */}
-            <div className="flex items-end justify-center gap-4 md:gap-8 mb-8">
+            <div className="flex items-end justify-center gap-2 sm:gap-4 md:gap-8 mb-8">
               {/* Silver - 2nd Place */}
               <motion.div
-                className="flex flex-col items-center"
+                className="flex flex-col items-center flex-1 max-w-[36%] sm:max-w-none"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4, type: "spring" }}
               >
                 <motion.div
-                  className="mb-4"
+                  className="mb-4 w-full"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
-                  <div className="text-6xl mb-2">🥈</div>
-                  <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 text-center min-w-[140px]">
-                    <p className="text-white font-bold text-lg">
+                  <div className="text-4xl sm:text-6xl mb-2 text-center">🥈</div>
+                  <div className="bg-white/20 backdrop-blur-md rounded-xl p-3 sm:p-4 text-center w-full sm:min-w-[140px]">
+                    <p className="text-white font-bold text-sm sm:text-lg break-words">
                       {currentAward.winners[1].name}
                     </p>
                   </div>
                 </motion.div>
-                <div className={`${getPodiumHeight("silver")} w-32 bg-gradient-to-b ${getMedalColor("silver")} rounded-t-lg shadow-xl flex items-center justify-center text-white font-bold text-2xl`}>
+                <div className={`${getPodiumHeight("silver")} w-full sm:w-32 bg-gradient-to-b ${getMedalColor("silver")} rounded-t-lg shadow-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl`}>
                   2°
                 </div>
               </motion.div>
 
               {/* Gold - 1st Place (Winner with special animation) */}
               <motion.div
-                className="flex flex-col items-center"
+                className="flex flex-col items-center flex-1 max-w-[38%] sm:max-w-none"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, type: "spring" }}
               >
                 <motion.div
-                  className="mb-4 relative"
+                  className="mb-4 relative w-full"
                   animate={{
                     y: [0, -10, 0],
                   }}
@@ -557,7 +557,7 @@ export function RPUAwards() {
                   </motion.div>
 
                   <motion.div
-                    className="text-8xl mb-2"
+                    className="text-6xl sm:text-8xl mb-2 text-center"
                     animate={{
                       rotate: [0, 10, -10, 0],
                       scale: [1, 1.1, 1],
@@ -569,39 +569,39 @@ export function RPUAwards() {
                   >
                     🥇
                   </motion.div>
-                  <div className="bg-gradient-to-br from-[var(--color-accent)] to-yellow-600 rounded-xl p-5 text-center min-w-[160px] shadow-2xl border-4 border-white/30">
-                    <p className="text-[var(--color-primary)] font-black text-xl">
+                  <div className="bg-gradient-to-br from-[var(--color-accent)] to-yellow-600 rounded-xl p-3 sm:p-5 text-center w-full sm:min-w-[160px] shadow-2xl border-4 border-white/30">
+                    <p className="text-[var(--color-primary)] font-black text-base sm:text-xl break-words">
                       {currentAward.winners[0].name}
                     </p>
-                    <p className="text-[var(--color-primary)]/70 text-sm font-bold mt-1">
+                    <p className="text-[var(--color-primary)]/70 text-xs sm:text-sm font-bold mt-1">
                       GANADOR(A)
                     </p>
                   </div>
                 </motion.div>
-                <div className={`${getPodiumHeight("gold")} w-36 bg-gradient-to-b ${getMedalColor("gold")} rounded-t-lg shadow-2xl flex items-center justify-center text-white font-bold text-3xl border-t-4 border-white/30`}>
+                <div className={`${getPodiumHeight("gold")} w-full sm:w-36 bg-gradient-to-b ${getMedalColor("gold")} rounded-t-lg shadow-2xl flex items-center justify-center text-white font-bold text-2xl sm:text-3xl border-t-4 border-white/30`}>
                   1°
                 </div>
               </motion.div>
 
               {/* Bronze - 3rd Place */}
               <motion.div
-                className="flex flex-col items-center"
+                className="flex flex-col items-center flex-1 max-w-[36%] sm:max-w-none"
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5, type: "spring" }}
               >
                 <motion.div
-                  className="mb-4"
+                  className="mb-4 w-full"
                   whileHover={{ scale: 1.1, rotate: -5 }}
                 >
-                  <div className="text-6xl mb-2">🥉</div>
-                  <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 text-center min-w-[140px]">
-                    <p className="text-white font-bold text-lg">
+                  <div className="text-4xl sm:text-6xl mb-2 text-center">🥉</div>
+                  <div className="bg-white/20 backdrop-blur-md rounded-xl p-3 sm:p-4 text-center w-full sm:min-w-[140px]">
+                    <p className="text-white font-bold text-sm sm:text-lg break-words">
                       {currentAward.winners[2].name}
                     </p>
                   </div>
                 </motion.div>
-                <div className={`${getPodiumHeight("bronze")} w-32 bg-gradient-to-b ${getMedalColor("bronze")} rounded-t-lg shadow-xl flex items-center justify-center text-white font-bold text-2xl`}>
+                <div className={`${getPodiumHeight("bronze")} w-full sm:w-32 bg-gradient-to-b ${getMedalColor("bronze")} rounded-t-lg shadow-xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl`}>
                   3°
                 </div>
               </motion.div>

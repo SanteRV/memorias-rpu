@@ -1,5 +1,6 @@
 const { del } = require('@vercel/blob');
 const { query } = require('../_lib/db');
+const { enforceRateLimit } = require('../_lib/rateLimit');
 
 function requireAdmin(req) {
   const adminKey = process.env.ADMIN_API_KEY;
@@ -13,6 +14,18 @@ module.exports = async (req, res) => {
     return res
       .status(400)
       .json({ success: false, message: 'ID inválido' });
+  }
+
+  // Rate limit por instancia: lecturas amplias, borrados muy acotados
+  const isDelete = req.method === 'DELETE';
+  if (
+    enforceRateLimit(req, res, {
+      name: isDelete ? 'exp-delete' : 'exp-read',
+      max: isDelete ? 20 : 60,
+      windowMs: 60 * 1000
+    })
+  ) {
+    return;
   }
 
   try {

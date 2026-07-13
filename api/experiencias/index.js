@@ -2,32 +2,11 @@ const Busboy = require('busboy');
 const path = require('path');
 const { put } = require('@vercel/blob');
 const { query } = require('../_lib/db');
+const { enforceRateLimit } = require('../_lib/rateLimit');
 
 // Vercel limita el body a ~4.5MB, dejamos margen
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
 const ALLOWED_TYPES = /jpeg|jpg|png|gif|webp/;
-
-// Rate limiting por IP para POST. Vive en memoria de la instancia:
-// se reinicia en cada cold start, suficiente para frenar spam básico.
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hora
-const RATE_MAX_POSTS = 10;
-const postLog = new Map();
-
-function isRateLimited(req) {
-  const ip =
-    req.headers['x-real-ip'] ||
-    String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
-    'unknown';
-  const now = Date.now();
-  const recent = (postLog.get(ip) || []).filter(
-    (t) => now - t < RATE_WINDOW_MS
-  );
-  if (recent.length >= RATE_MAX_POSTS) return true;
-  recent.push(now);
-  postLog.set(ip, recent);
-  if (postLog.size > 5000) postLog.clear(); // tope de memoria
-  return false;
-}
 
 // Verifica que el contenido del archivo sea realmente una imagen
 // (magic bytes), no solo que la extensión lo diga.
@@ -107,6 +86,16 @@ function parseMultipart(req, rawBody) {
 module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
+      // Límite generoso para lectura (evita scraping masivo)
+      if (
+        enforceRateLimit(req, res, {
+          name: 'exp-read',
+          max: 60,
+          windowMs: 60 * 1000
+        })
+      ) {
+        return;
+      }
       const result = await query(
         'SELECT * FROM experiencias ORDER BY created_at DESC'
       );
@@ -114,11 +103,15 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      if (isRateLimited(req)) {
-        return res.status(429).json({
-          success: false,
-          message: 'Demasiadas solicitudes, intente de nuevo más tarde'
-        });
+      // Límite estricto para escritura: 10 publicaciones por hora e IP
+      if (
+        enforceRateLimit(req, res, {
+          name: 'exp-write',
+          max: 10,
+          windowMs: 60 * 60 * 1000
+        })
+      ) {
+        return;
       }
 
       const rawBody = await readRawBody(req);

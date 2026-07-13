@@ -64,3 +64,6 @@ backup.sql
 # Blender
 *.blend
 *.blend1
+
+.vercel
+.env*
