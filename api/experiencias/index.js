@@ -48,12 +48,14 @@ function parseMultipart(req, rawBody) {
     const fields = {};
     let file = null;
     let fileTooBig = false;
+    let fileMeta = null;
 
     busboy.on('field', (name, value) => {
       fields[name] = value;
     });
 
     busboy.on('file', (name, stream, info) => {
+      fileMeta = { filename: info.filename, mimeType: info.mimeType };
       const ext = path.extname(info.filename || '').toLowerCase();
       const okType =
         ALLOWED_TYPES.test(ext.slice(1)) && ALLOWED_TYPES.test(info.mimeType);
@@ -77,7 +79,7 @@ function parseMultipart(req, rawBody) {
       });
     });
 
-    busboy.on('finish', () => resolve({ fields, file, fileTooBig }));
+    busboy.on('finish', () => resolve({ fields, file, fileTooBig, fileMeta }));
     busboy.on('error', reject);
     busboy.end(rawBody);
   });
@@ -115,27 +117,38 @@ module.exports = async (req, res) => {
       }
 
       const rawBody = await readRawBody(req);
-      const { fields, file, fileTooBig } = await parseMultipart(req, rawBody);
+      const { fields, file, fileTooBig, fileMeta } = await parseMultipart(
+        req,
+        rawBody
+      );
+
+      // Registra el motivo de un rechazo (sin datos personales) para diagnóstico
+      const rejectPost = (message, motivo) => {
+        console.warn(
+          `[POST 400] ${motivo} | archivo=${fileMeta ? `${fileMeta.filename} (${fileMeta.mimeType})` : 'sin foto'} | nombreLen=${(fields.nombre || '').length} | expLen=${(fields.experiencia || '').length}`
+        );
+        return res.status(400).json({ success: false, message });
+      };
 
       if (fileTooBig) {
-        return res.status(400).json({
-          success: false,
-          message: 'La foto supera el tamaño máximo de 4MB'
-        });
+        return rejectPost(
+          'La foto supera el tamaño máximo de 4MB',
+          'archivo demasiado grande'
+        );
       }
       if (file && file.invalid) {
-        return res.status(400).json({
-          success: false,
-          message: 'Solo se permiten imágenes (jpeg, jpg, png, gif, webp)'
-        });
+        return rejectPost(
+          'Esa foto no tiene un formato compatible. Usa JPG, PNG o WEBP (si es de iPhone, actívalo en Ajustes › Cámara › Formatos › "Más compatible", o toma captura de pantalla).',
+          'tipo/extension no permitido'
+        );
       }
 
       let { nombre, departamento, experiencia } = fields;
       if (!nombre || !departamento || !experiencia) {
-        return res.status(400).json({
-          success: false,
-          message: 'Faltan campos requeridos: nombre, departamento y experiencia'
-        });
+        return rejectPost(
+          'Faltan campos requeridos: nombre, departamento y experiencia',
+          'campos faltantes'
+        );
       }
 
       nombre = sanitizeInput(nombre);
@@ -143,23 +156,23 @@ module.exports = async (req, res) => {
       experiencia = sanitizeInput(experiencia);
 
       if (nombre.length < 3 || nombre.length > 100) {
-        return res.status(400).json({
-          success: false,
-          message: 'El nombre debe tener entre 3 y 100 caracteres'
-        });
+        return rejectPost(
+          'El nombre debe tener entre 3 y 100 caracteres',
+          'longitud de nombre'
+        );
       }
       if (experiencia.length < 10 || experiencia.length > 500) {
-        return res.status(400).json({
-          success: false,
-          message: 'La experiencia debe tener entre 10 y 500 caracteres'
-        });
+        return rejectPost(
+          'La experiencia debe tener entre 10 y 500 caracteres',
+          'longitud de experiencia'
+        );
       }
 
       if (file && !file.invalid && !isRealImage(file.buffer)) {
-        return res.status(400).json({
-          success: false,
-          message: 'El archivo no es una imagen válida'
-        });
+        return rejectPost(
+          'El archivo no es una imagen válida',
+          'magic bytes no coinciden'
+        );
       }
 
       let foto_url = null;
