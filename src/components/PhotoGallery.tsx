@@ -12,6 +12,7 @@ import img9 from "../image/recuerdos/9.jpeg";
 import img10 from "../image/recuerdos/10.jpeg";
 import img11 from "../image/recuerdos/11.jpeg";
 import img12 from "../image/recuerdos/12.jpeg";
+import img13 from "../image/recuerdos/13.jpeg";
 
 interface Experiencia {
   id: number;
@@ -79,6 +80,11 @@ export function PhotoGallery() {
     {
       url: img12,
       alt: "Almuerzo compartido en Ica",
+      isStatic: true
+    },
+    {
+      url: img13,
+      alt: "Paseo por el campus con antojos",
       isStatic: true
     },
     {
