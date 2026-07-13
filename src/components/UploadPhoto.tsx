@@ -130,7 +130,7 @@ export function UploadPhoto() {
               initial={{ opacity: 0, y: -50 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -50 }}
-              className="fixed top-6 right-6 z-50 max-w-md"
+              className="fixed top-20 left-4 right-4 sm:left-auto sm:right-6 z-[200] sm:max-w-md"
             >
               <div
                 className={`flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl ${
