@@ -22,8 +22,8 @@ const awardsData: AwardCategory[] = [
     emoji: "🍺",
     winners: [
       { name: "Lewis", position: "gold" },
-      { name: "Denzel", position: "silver" },
-      { name: "Mario Irrivarren", position: "bronze" }
+      { name: "Mario Irrivarren", position: "silver" },
+      { name: "Dénzel", position: "bronze" }
     ]
   },
   {
@@ -33,7 +33,7 @@ const awardsData: AwardCategory[] = [
     winners: [
       { name: "Piero", position: "gold" },
       { name: "Ayrton", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
@@ -41,9 +41,9 @@ const awardsData: AwardCategory[] = [
     title: "El hablamamadas tres mil",
     emoji: "🗣️",
     winners: [
-      { name: "Lewis", position: "gold" },
-      { name: "Piero", position: "silver" },
-      { name: "Oscar", position: "bronze" }
+      { name: "Piero", position: "gold" },
+      { name: "Lewis", position: "silver" },
+      { name: "Dénzel", position: "bronze" }
     ]
   },
   {
@@ -52,8 +52,8 @@ const awardsData: AwardCategory[] = [
     emoji: "🍞",
     winners: [
       { name: "Alexandra", position: "gold" },
-      { name: "Ale", position: "silver" },
-      { name: "Anyeli", position: "bronze" }
+      { name: "Lucky", position: "silver" },
+      { name: "Miska", position: "bronze" }
     ]
   },
   {
@@ -62,8 +62,8 @@ const awardsData: AwardCategory[] = [
     emoji: "🎭",
     winners: [
       { name: "Anyeli", position: "gold" },
-      { name: "Lewis", position: "silver" },
-      { name: "Alexandra", position: "bronze" }
+      { name: "Piero", position: "silver" },
+      { name: "Edith", position: "bronze" }
     ]
   },
   {
@@ -71,9 +71,9 @@ const awardsData: AwardCategory[] = [
     title: "El más jarra",
     emoji: "🥃",
     winners: [
-      { name: "Angely", position: "gold" },
-      { name: "Fernando", position: "silver" },
-      { name: "Mario Irrivarren", position: "bronze" }
+      { name: "Fernando", position: "gold" },
+      { name: "Lewis", position: "silver" },
+      { name: "Denzel", position: "bronze" }
     ]
   },
   {
@@ -81,39 +81,39 @@ const awardsData: AwardCategory[] = [
     title: "El/La más chismoso(a)",
     emoji: "👂",
     winners: [
-      { name: "Keyla", position: "gold" },
-      { name: "Piero", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Piero", position: "gold" },
+      { name: "Andree", position: "silver" },
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
     id: 8,
-    title: "El/La duende energético",
+    title: "El/La duende energético(a)",
     emoji: "⚡",
     winners: [
-      { name: "Andree", position: "gold" },
-      { name: "Ana", position: "silver" },
-      { name: "Keyla", position: "bronze" }
+      { name: "Keyla", position: "gold" },
+      { name: "Edith", position: "silver" },
+      { name: "Ana", position: "bronze" }
     ]
   },
   {
     id: 9,
     title: "El Ángel Caído",
-    emoji: "😇😈",
+    emoji: "😇",
     winners: [
-      { name: "Carlos Daniel", position: "gold" },
-      { name: "Mario Irrivarren", position: "silver" },
-      { name: "Piero", position: "bronze" }
+      { name: "Andree", position: "gold" },
+      { name: "Piero", position: "silver" },
+      { name: "Mario Irrivarren", position: "bronze" }
     ]
   },
   {
     id: 10,
     title: "El sigue mujeres tres mil",
-    emoji: "💃",
+    emoji: "💘",
     winners: [
       { name: "Oscar", position: "gold" },
-      { name: "Piero", position: "silver" },
-      { name: "Carlos Daniel", position: "bronze" }
+      { name: "Mario Irrivarren", position: "silver" },
+      { name: "Piero", position: "bronze" }
     ]
   },
   {
@@ -121,9 +121,9 @@ const awardsData: AwardCategory[] = [
     title: "El/La Tragapanetón Deluxe",
     emoji: "🍰",
     winners: [
-      { name: "Denzel", position: "gold" },
-      { name: "Oscar", position: "silver" },
-      { name: "Miska", position: "bronze" }
+      { name: "Carlos Daniel", position: "gold" },
+      { name: "Piero", position: "silver" },
+      { name: "Braulio", position: "bronze" }
     ]
   },
   {
@@ -131,9 +131,9 @@ const awardsData: AwardCategory[] = [
     title: "El/La más infiel",
     emoji: "💔",
     winners: [
-      { name: "Andree", position: "gold" },
-      { name: "Carlos Daniel", position: "silver" },
-      { name: "Braulio", position: "bronze" }
+      { name: "Carlos Daniel", position: "gold" },
+      { name: "Piero", position: "silver" },
+      { name: "Dénzel", position: "bronze" }
     ]
   },
   {
@@ -141,9 +141,9 @@ const awardsData: AwardCategory[] = [
     title: "El/La más fiel",
     emoji: "❤️",
     winners: [
-      { name: "Miska", position: "gold" },
+      { name: "Andree", position: "gold" },
       { name: "Piero", position: "silver" },
-      { name: "Carlos", position: "bronze" }
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
@@ -151,29 +151,29 @@ const awardsData: AwardCategory[] = [
     title: "El más impuntual",
     emoji: "⏰",
     winners: [
-      { name: "Piero", position: "gold" },
-      { name: "Lucky", position: "silver" },
-      { name: "Andree", position: "bronze" }
+      { name: "Lucky", position: "gold" },
+      { name: "Andree", position: "silver" },
+      { name: "Miska", position: "bronze" }
     ]
   },
   {
     id: 15,
-    title: "El/La más competitivo",
+    title: "El/La más competitivo(a)",
     emoji: "🏆",
     winners: [
-      { name: "Nataly", position: "gold" },
-      { name: "Keyla", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Keyla", position: "gold" },
+      { name: "Piero", position: "silver" },
+      { name: "Carlos Daniel", position: "bronze" }
     ]
   },
   {
     id: 16,
     title: "El/La mejor bailarín(a)",
-    emoji: "💃🕺",
+    emoji: "💃",
     winners: [
-      { name: "Carbajal", position: "gold" },
+      { name: "Nataly", position: "gold" },
       { name: "Mario Irrivarren", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
@@ -181,19 +181,19 @@ const awardsData: AwardCategory[] = [
     title: "El/La que le va peor en el amor",
     emoji: "😭",
     winners: [
-      { name: "Oscar", position: "gold" },
-      { name: "Mario Irrivarren", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Piero", position: "gold" },
+      { name: "Josué", position: "silver" },
+      { name: "Anyeli", position: "bronze" }
     ]
   },
   {
     id: 18,
-    title: "El más bandido(a)",
+    title: "El/La más bandido(a)",
     emoji: "😎",
     winners: [
-      { name: "Hana", position: "gold" },
-      { name: "Maria", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Oscar", position: "gold" },
+      { name: "Mario Irrivarren", position: "silver" },
+      { name: "Braulio", position: "bronze" }
     ]
   },
   {
@@ -201,9 +201,9 @@ const awardsData: AwardCategory[] = [
     title: "El/La que se demora 3 días en responder",
     emoji: "📵",
     winners: [
-      { name: "Ayrton", position: "gold" },
-      { name: "Oscar", position: "silver" },
-      { name: "Lewis", position: "bronze" }
+      { name: "Maria", position: "gold" },
+      { name: "Hanna", position: "silver" },
+      { name: "David", position: "bronze" }
     ]
   },
   {
@@ -211,39 +211,39 @@ const awardsData: AwardCategory[] = [
     title: "El/La más pisado(a)",
     emoji: "🪤",
     winners: [
-      { name: "Miska", position: "gold" },
-      { name: "Carlos Daniel", position: "silver" },
-      { name: "David", position: "bronze" }
+      { name: "Carlos Daniel", position: "gold" },
+      { name: "Dénzel", position: "silver" },
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
     id: 21,
-    title: "El espíritu del grupo",
+    title: "El Espíritu del Grupo que Desaparece",
     emoji: "👻",
     winners: [
-      { name: "Nataly", position: "gold" },
+      { name: "David", position: "gold" },
       { name: "Lucky", position: "silver" },
-      { name: "Fabiana", position: "bronze" }
+      { name: "Miska", position: "bronze" }
     ]
   },
   {
     id: 22,
-    title: "El/La diva de las fotos",
+    title: "El/La Diva de las Fotos",
     emoji: "📸",
     winners: [
-      { name: "Oscar", position: "gold" },
+      { name: "Lucky", position: "gold" },
       { name: "Miska", position: "silver" },
-      { name: "David", position: "bronze" }
+      { name: "Fabiana", position: "bronze" }
     ]
   },
   {
     id: 23,
-    title: "El/La rompe-corazones accidental",
+    title: "El/La Rompe-Corazones Accidental",
     emoji: "💘",
     winners: [
-      { name: "Piero", position: "gold" },
-      { name: "Braulio", position: "silver" },
-      { name: "Denzel", position: "bronze" }
+      { name: "Braulio", position: "gold" },
+      { name: "Oscar", position: "silver" },
+      { name: "Edith", position: "bronze" }
     ]
   },
   {
@@ -251,39 +251,29 @@ const awardsData: AwardCategory[] = [
     title: "Mejor desarrollo de personaje",
     emoji: "📈",
     winners: [
-      { name: "Alexandra", position: "gold" },
-      { name: "Edith", position: "silver" },
-      { name: "Anhelle", position: "bronze" }
+      { name: "Piero", position: "gold" },
+      { name: "Dénzel", position: "silver" },
+      { name: "Oscar", position: "bronze" }
     ]
   },
   {
     id: 25,
-    title: "El/La que no supera al ex",
+    title: "El/La que no supera al Ex",
     emoji: "🥲",
     winners: [
-      { name: "Lewis", position: "gold" },
-      { name: "Piero", position: "silver" },
-      { name: "Denzel", position: "bronze" }
+      { name: "Alexandra", position: "gold" },
+      { name: "Manuel Carbajal", position: "silver" },
+      { name: "Josué", position: "bronze" }
     ]
   },
   {
     id: 26,
-    title: "Experto/a en crear situaciones incómodas",
+    title: "Experto(a) en situaciones incómodas",
     emoji: "😬",
     winners: [
       { name: "Lewis", position: "gold" },
-      { name: "Oscar", position: "silver" },
+      { name: "Dénzel", position: "silver" },
       { name: "Ayrton", position: "bronze" }
-    ]
-  },
-  {
-    id: 27,
-    title: "Mejor shippeo",
-    emoji: "💞",
-    winners: [
-      { name: "Piero ❤️ Anyeli", position: "gold" },
-      { name: "David ❤️ Hanna", position: "silver" },
-      { name: "Lewis ❤️ Sheriff", position: "bronze" }
     ]
   }
 ];
