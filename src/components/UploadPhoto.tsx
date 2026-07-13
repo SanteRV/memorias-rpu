@@ -211,9 +211,15 @@ export function UploadPhoto() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                maxLength={100}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
                 placeholder="Ej: María González"
               />
+              {name.length > 0 && name.trim().length < 3 && (
+                <p className="mt-1 text-sm text-red-500">
+                  Escribe al menos 3 caracteres
+                </p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -245,10 +251,16 @@ export function UploadPhoto() {
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
                 required
+                maxLength={500}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all resize-none"
-                placeholder="Comparte tu experiencia del intercambio..."
+                placeholder="Cuéntanos qué viviste en el intercambio (mínimo 10 caracteres)..."
                 rows={4}
               />
+              <p className={`mt-1 text-sm ${caption.length > 0 && caption.length < 10 ? 'text-red-500' : 'text-gray-500'}`}>
+                {caption.length < 10
+                  ? `Escribe al menos 10 caracteres (te faltan ${10 - caption.length})`
+                  : `${caption.length}/500 caracteres`}
+              </p>
             </div>
 
             {/* Consentimiento (Ley N° 29733 de Protección de Datos Personales) */}
@@ -268,7 +280,7 @@ export function UploadPhoto() {
 
             <button
               type="submit"
-              disabled={!previewUrl || !name || !location || !caption || !consent || isSubmitting}
+              disabled={!previewUrl || name.trim().length < 3 || !location || caption.trim().length < 10 || !consent || isSubmitting}
               className="w-full py-4 rounded-xl font-semibold transition-all hover:shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 bg-[var(--color-accent)] border-2 border-[var(--color-accent)]"
               style={{
                 minHeight: '56px',
