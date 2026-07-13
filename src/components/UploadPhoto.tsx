@@ -39,6 +39,7 @@ export function UploadPhoto() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [consent, setConsent] = useState(false);
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
@@ -48,22 +49,90 @@ export function UploadPhoto() {
     setTimeout(() => setNotification(null), 5000);
   };
 
-  const MAX_FILE_SIZE = 4 * 1024 * 1024; // límite de body en Vercel
+  const MAX_SOURCE_SIZE = 15 * 1024 * 1024; // lo que el usuario puede elegir
+  const TARGET_SIZE = 3.5 * 1024 * 1024;    // a lo que se comprime (bajo el límite de Vercel)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        showNotification('error', 'La foto supera el tamaño máximo de 4MB');
-        e.target.value = "";
-        return;
+  // Comprime/redimensiona la imagen en el navegador para que la subida
+  // quede bajo el límite de ~4.5MB de las funciones serverless.
+  const comprimirImagen = async (file: File): Promise<File> => {
+    if (file.size <= TARGET_SIZE) return file; // ya es liviana
+
+    const dataUrl: string = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result as string);
+      r.onerror = () => reject(new Error('read'));
+      r.readAsDataURL(file);
+    });
+
+    const img: HTMLImageElement = await new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('decode'));
+      image.src = dataUrl;
+    });
+
+    // Redimensionar manteniendo proporción (máx 1920px del lado mayor)
+    const MAX_DIM = 1920;
+    let { width, height } = img;
+    if (width > MAX_DIM || height > MAX_DIM) {
+      if (width >= height) {
+        height = Math.round((height * MAX_DIM) / width);
+        width = MAX_DIM;
+      } else {
+        width = Math.round((width * MAX_DIM) / height);
+        height = MAX_DIM;
       }
-      setSelectedFile(file);
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return file;
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // Bajar la calidad hasta quedar bajo el objetivo
+    let quality = 0.85;
+    let blob: Blob | null = await new Promise((res) =>
+      canvas.toBlob(res, 'image/jpeg', quality)
+    );
+    while (blob && blob.size > TARGET_SIZE && quality > 0.4) {
+      quality -= 0.15;
+      blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', quality));
+    }
+    if (!blob) return file;
+
+    const nombreBase = file.name.replace(/\.[^.]+$/, '');
+    return new File([blob], `${nombreBase}.jpg`, { type: 'image/jpeg' });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > MAX_SOURCE_SIZE) {
+      showNotification('error', 'La foto supera el tamaño máximo de 15MB');
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      const optimizada = await comprimirImagen(file);
+      setSelectedFile(optimizada);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(optimizada);
+    } catch {
+      showNotification(
+        'error',
+        'No se pudo procesar esa imagen. Prueba con una JPG o PNG (si es de iPhone, súbela como "Más compatible" o toma captura de pantalla).'
+      );
+      e.target.value = "";
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -180,7 +249,12 @@ export function UploadPhoto() {
                 htmlFor="photo-upload"
                 className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-[var(--color-accent)]/50 rounded-2xl cursor-pointer transition-all hover:border-opacity-100"
               >
-                {previewUrl ? (
+                {isProcessing ? (
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Loader2 className="mb-4 animate-spin text-[var(--color-primary)]" size={48} />
+                    <p className="text-[var(--color-primary)]">Optimizando tu foto...</p>
+                  </div>
+                ) : previewUrl ? (
                   <img src={previewUrl} alt="Preview" className="w-full h-full object-cover rounded-2xl" />
                 ) : (
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -188,7 +262,7 @@ export function UploadPhoto() {
                     <p className="mb-2 text-[var(--color-primary)]">
                       Haz clic para subir una foto
                     </p>
-                    <p className="text-gray-500">PNG, JPG hasta 4MB</p>
+                    <p className="text-gray-500">PNG, JPG hasta 15MB (se optimiza sola)</p>
                   </div>
                 )}
                 <input
@@ -280,7 +354,7 @@ export function UploadPhoto() {
 
             <button
               type="submit"
-              disabled={!previewUrl || name.trim().length < 3 || !location || caption.trim().length < 10 || !consent || isSubmitting}
+              disabled={!previewUrl || name.trim().length < 3 || !location || caption.trim().length < 10 || !consent || isSubmitting || isProcessing}
               className="w-full py-4 rounded-xl font-semibold transition-all hover:shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 bg-[var(--color-accent)] border-2 border-[var(--color-accent)]"
               style={{
                 minHeight: '56px',
