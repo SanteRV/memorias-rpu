@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
-import Masonry from "react-responsive-masonry";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Image } from "./Image";
-import { Loader2, X } from "lucide-react";
+import { X } from "lucide-react";
 import img1 from "../image/recuerdos/1.jpeg";
 import img2 from "../image/recuerdos/2.jpeg";
 import img3 from "../image/recuerdos/3.jpeg";
@@ -14,31 +14,14 @@ import img11 from "../image/recuerdos/11.jpeg";
 import img12 from "../image/recuerdos/12.jpeg";
 import img13 from "../image/recuerdos/13.jpeg";
 
-interface Experiencia {
-  id: number;
-  nombre: string;
-  departamento: string;
-  experiencia: string;
-  foto_url: string;
-  created_at: string;
-}
-
 interface PhotoType {
   url: string;
   alt: string;
   isStatic: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || '/api';
-
 export function PhotoGallery() {
-  const [uploadedPhotos, setUploadedPhotos] = useState<Experiencia[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoType | null>(null);
-
-  useEffect(() => {
-    fetchPhotos();
-  }, []);
 
   // Cerrar modal con tecla ESC
   useEffect(() => {
@@ -59,23 +42,8 @@ export function PhotoGallery() {
     };
   }, [selectedPhoto]);
 
-  const fetchPhotos = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${API_URL}/experiencias`);
-      const data = await response.json();
-
-      if (data.success) {
-        setUploadedPhotos(data.data);
-      }
-    } catch (error) {
-      console.error('Error al cargar fotos:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Fotos estáticas originales
+  // Fotos curadas del evento (las que sube la gente aparecen con su
+  // comentario en la sección de testimonios, para no perder el contexto).
   const staticPhotos = [
     {
       url: img12,
@@ -129,23 +97,7 @@ export function PhotoGallery() {
     }
   ];
 
-  // Convertir fotos subidas al formato de la galería.
-  // Las fotos en Vercel Blob ya vienen como URL absoluta; las antiguas
-  // (/uploads/...) se resuelven contra el servidor de la API.
-  const dynamicPhotos = uploadedPhotos.map(photo => {
-    const baseUrl = API_URL.endsWith('/api') ? API_URL.slice(0, -4) : API_URL;
-    const imageUrl = photo.foto_url?.startsWith('http')
-      ? photo.foto_url
-      : `${baseUrl}${photo.foto_url}`;
-    return {
-      url: imageUrl,
-      alt: `${photo.nombre} - ${photo.departamento}`,
-      isStatic: false
-    };
-  });
-
-  // Combinar fotos estáticas con dinámicas
-  const allPhotos = [...staticPhotos, ...dynamicPhotos];
+  const allPhotos = staticPhotos;
 
   return (
     <section id="galeria" className="py-20 px-6 bg-gradient-to-br from-[var(--color-primary)] via-blue-900 to-[var(--color-primary)]">
@@ -166,37 +118,33 @@ export function PhotoGallery() {
           </p>
         </motion.div>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="text-white animate-spin" size={48} />
-          </div>
-        ) : (
-          <Masonry columnsCount={3} gutter="1.5rem">
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 768: 3 }}>
+          <Masonry gutter="1rem">
             {allPhotos.map((photo, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ duration: 0.4, delay: (index % 6) * 0.05 }}
+                whileHover={{ scale: 1.03, y: -5 }}
                 onClick={() => setSelectedPhoto(photo)}
-                className="relative overflow-hidden rounded-2xl shadow-lg cursor-pointer bg-white"
+                className="relative overflow-hidden rounded-2xl shadow-lg cursor-pointer bg-white group"
               >
                 <div className="relative overflow-hidden">
                   <Image
                     src={photo.url}
                     alt={photo.alt}
-                    className="w-full h-auto object-cover transition-transform duration-500 hover:scale-110"
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <p className="text-white font-medium">{photo.alt}</p>
                   </div>
                 </div>
               </motion.div>
             ))}
           </Masonry>
-        )}
+        </ResponsiveMasonry>
 
         {/* Modal de imagen ampliada */}
         <AnimatePresence mode="wait">

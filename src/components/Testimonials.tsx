@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Quote, MapPin, Sparkles, Loader2 } from "lucide-react";
+import { Quote, MapPin, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface Experiencia {
@@ -71,7 +71,7 @@ export function Testimonials() {
           </h2>
           <div className="w-24 h-1 mx-auto mb-8 bg-[var(--color-accent)]"></div>
           <p className="max-w-2xl mx-auto text-white/90 text-lg">
-            Escucha lo que nuestros participantes tienen que decir sobre esta experiencia transformadora.
+            Cada foto con la historia de quien la vivió. Estos son los recuerdos que compartieron nuestros participantes.
           </p>
         </motion.div>
 
@@ -80,113 +80,64 @@ export function Testimonials() {
             <Loader2 className="text-white animate-spin" size={48} />
           </div>
         ) : testimonials.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" style={{ overflow: 'visible' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {testimonials.map((testimonial, index) => {
               const gradient = getGradient(index);
               return (
                 <motion.div
                   key={testimonial.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.97 }}
                   whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{
-                    y: -12,
-                    scale: 1.03,
-                    boxShadow: "0 25px 50px rgba(0, 0, 0, 0.3)"
-                  }}
-                  className="bg-white rounded-3xl p-8 shadow-2xl relative group"
-                  style={{
-                    borderRadius: '2rem',
-                    clipPath: 'none'
-                  }}
+                  transition={{ duration: 0.5, delay: (index % 6) * 0.08 }}
+                  whileHover={{ y: -8 }}
+                  className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-2xl"
                 >
-                  {/* Decorative corner shapes */}
-                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} opacity-10 rounded-bl-full`}></div>
-                  <div className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr ${gradient} opacity-10 rounded-tr-full`}></div>
+                  {/* Foto arriba (el contexto del comentario) */}
+                  {testimonial.foto_url ? (
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={testimonial.foto_url}
+                        alt={`Recuerdo de ${testimonial.nombre}`}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+                    </div>
+                  ) : (
+                    <div className={`flex aspect-[4/3] items-center justify-center bg-gradient-to-br ${gradient}`}>
+                      <Quote className="text-white/80" size={56} />
+                    </div>
+                  )}
 
-                  {/* Gradient border animation */}
-                  <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100`}
-                    style={{
-                      padding: '3px',
-                      borderRadius: '2rem',
-                      clipPath: 'none',
-                      zIndex: -1
-                    }}
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 0.3 }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  {/* Quote icon with gradient */}
-                  <motion.div
-                    className={`absolute -top-5 -right-5 w-20 h-20 rounded-full flex items-center justify-center bg-gradient-to-br ${gradient} shadow-xl`}
-                    whileHover={{ rotate: 360, scale: 1.15 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    <Quote className="text-white" size={32} />
-
-                    {/* Pulsing ring */}
-                    <motion.div
-                      className={`absolute inset-0 rounded-full bg-gradient-to-br ${gradient}`}
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [0.6, 0, 0.6]
-                      }}
-                      transition={{
-                        duration: 2.5,
-                        repeat: Infinity,
-                        delay: index * 0.4
-                      }}
+                  {/* Comentario debajo de la foto */}
+                  <div className="flex flex-1 flex-col p-6">
+                    <Quote
+                      className={`mb-3 bg-gradient-to-br ${gradient} bg-clip-text text-transparent`}
+                      size={28}
+                      strokeWidth={2.5}
                     />
-                  </motion.div>
-
-                  {/* Icon in corner - centered on top left corner */}
-                  <div
-                    className="absolute w-12 h-12 rounded-full flex items-center justify-center shadow-xl"
-                    style={{ backgroundColor: '#F7C548', zIndex: 30, top: '-24px', left: '-24px' }}
-                  >
-                    <Sparkles className="text-white" size={22} strokeWidth={2.5} />
-                  </div>
-
-                  <p className="text-[var(--color-primary)] italic mb-6 mt-6 leading-relaxed relative text-base" style={{ zIndex: 5 }}>
-                    "{testimonial.experiencia}"
-                  </p>
-
-                  {/* Golden line separator */}
-                  <div
-                    className="w-full mb-4 relative z-10"
-                    style={{
-                      height: '2px',
-                      backgroundColor: '#F7C548',
-                      opacity: 1
-                    }}
-                  />
-
-                  <div className="relative z-10">
-                    <p className="text-[var(--color-primary)] font-bold text-lg mb-2">
-                      {testimonial.nombre}
+                    <p className="mb-5 flex-1 italic leading-relaxed text-[var(--color-primary)]">
+                      “{testimonial.experiencia}”
                     </p>
-                    <div className="flex items-center gap-2">
-                      <motion.div
-                        whileHover={{ scale: 1.2, rotate: 15 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <MapPin className={`bg-gradient-to-br ${gradient} bg-clip-text text-transparent`} size={18} strokeWidth={2.5} style={{ filter: 'drop-shadow(0 0 8px rgba(247, 197, 72, 0.5))' }} />
-                      </motion.div>
-                      <p className="text-gray-600 text-sm font-medium">{testimonial.departamento}</p>
+
+                    <div className="h-px w-full bg-[var(--color-accent)]" />
+
+                    <div className="mt-4 flex items-center gap-3">
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white`}>
+                        {testimonial.nombre.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="font-bold leading-tight text-[var(--color-primary)]">
+                          {testimonial.nombre}
+                        </p>
+                        <div className="flex items-center gap-1 text-gray-500">
+                          <MapPin size={14} strokeWidth={2.5} />
+                          <span className="text-sm">{testimonial.departamento}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Decorative side accent */}
-                  <motion.div
-                    className={`absolute left-0 top-1/4 w-1.5 h-1/2 bg-gradient-to-b ${gradient} rounded-r-full`}
-                    initial={{ height: "0%" }}
-                    whileInView={{ height: "50%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
-                  />
                 </motion.div>
               );
             })}
