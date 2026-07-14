@@ -1,6 +1,7 @@
 const Busboy = require('busboy');
 const path = require('path');
 const { put } = require('@vercel/blob');
+const { subirImagen, cloudinaryConfigurado } = require('../_lib/cloudinary');
 const { query } = require('../_lib/db');
 const { enforceRateLimit } = require('../_lib/rateLimit');
 
@@ -176,18 +177,27 @@ module.exports = async (req, res) => {
       }
 
       let foto_url = null;
+      let foto_public_id = null;
       if (file) {
-        const blob = await put(`fotos/experiencia${file.ext}`, file.buffer, {
-          access: 'public',
-          contentType: file.mimeType,
-          addRandomSuffix: true
-        });
-        foto_url = blob.url;
+        if (cloudinaryConfigurado()) {
+          // Nuevo: Cloudinary (más espacio, CDN y optimización)
+          const subida = await subirImagen(file.buffer);
+          foto_url = subida.secure_url;
+          foto_public_id = subida.public_id;
+        } else {
+          // Respaldo: Vercel Blob (mientras no estén las claves de Cloudinary)
+          const blob = await put(`fotos/experiencia${file.ext}`, file.buffer, {
+            access: 'public',
+            contentType: file.mimeType,
+            addRandomSuffix: true
+          });
+          foto_url = blob.url;
+        }
       }
 
       const result = await query(
-        'INSERT INTO experiencias (nombre, departamento, experiencia, foto_url) VALUES ($1, $2, $3, $4) RETURNING *',
-        [nombre, departamento, experiencia, foto_url]
+        'INSERT INTO experiencias (nombre, departamento, experiencia, foto_url, foto_public_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [nombre, departamento, experiencia, foto_url, foto_public_id]
       );
 
       return res.status(201).json({

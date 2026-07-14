@@ -1,4 +1,5 @@
 const { del } = require('@vercel/blob');
+const { borrarImagen } = require('../_lib/cloudinary');
 const { query } = require('../_lib/db');
 const { enforceRateLimit } = require('../_lib/rateLimit');
 
@@ -67,7 +68,7 @@ module.exports = async (req, res) => {
       }
 
       const existing = await query(
-        'SELECT foto_url FROM experiencias WHERE id = $1',
+        'SELECT foto_url, foto_public_id FROM experiencias WHERE id = $1',
         [id]
       );
       if (existing.rows.length === 0) {
@@ -76,13 +77,20 @@ module.exports = async (req, res) => {
           .json({ success: false, message: 'Experiencia no encontrada' });
       }
 
-      const fotoUrl = existing.rows[0].foto_url;
-      if (fotoUrl && fotoUrl.startsWith('http')) {
+      const { foto_url: fotoUrl, foto_public_id: fotoPublicId } =
+        existing.rows[0];
+      // Nuevas fotos: Cloudinary. Viejas: Vercel Blob. No bloquea el borrado.
+      if (fotoPublicId) {
+        try {
+          await borrarImagen(fotoPublicId);
+        } catch (e) {
+          console.error('No se pudo eliminar la foto de Cloudinary:', e);
+        }
+      } else if (fotoUrl && fotoUrl.includes('blob.vercel-storage.com')) {
         try {
           await del(fotoUrl);
-        } catch (blobError) {
-          // La foto puede no existir ya en Blob; no bloquea el borrado
-          console.error('No se pudo eliminar la foto del Blob:', blobError);
+        } catch (e) {
+          console.error('No se pudo eliminar la foto del Blob:', e);
         }
       }
 

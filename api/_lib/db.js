@@ -44,6 +44,8 @@ const SCHEMA = `
     ON experiencias (created_at DESC);
   ALTER TABLE experiencias
     ADD COLUMN IF NOT EXISTS reacciones INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE experiencias
+    ADD COLUMN IF NOT EXISTS foto_public_id TEXT;
 `;
 
 async function query(text, params) {
