@@ -106,13 +106,6 @@ export function Slideshow({ photos, onClose }: SlideshowProps) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent" />
 
-      {/* Título de la foto */}
-      <div className="absolute bottom-16 left-0 right-0 px-6 text-center">
-        <p className="text-lg font-medium text-white drop-shadow-lg">
-          {photos[index].alt}
-        </p>
-      </div>
-
       {/* Cerrar */}
       <button
         onClick={onClose}
@@ -138,8 +131,11 @@ export function Slideshow({ photos, onClose }: SlideshowProps) {
         <ChevronRight size={28} />
       </button>
 
-      {/* Play/pause + progreso */}
-      <div className="absolute bottom-5 left-0 right-0 flex flex-col items-center gap-3">
+      {/* Título + play/pause + progreso (apilados, sin encimarse) */}
+      <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-3 px-6">
+        <p className="text-center text-base font-medium text-white drop-shadow-lg sm:text-lg">
+          {photos[index].alt}
+        </p>
         <button
           onClick={togglePlay}
           aria-label={playing ? 'Pausar' : 'Reproducir'}
