@@ -30,15 +30,24 @@ export function Slideshow({ photos, onClose }: SlideshowProps) {
     return () => clearTimeout(t);
   }, [index, playing, photos.length]);
 
-  // Música: intenta reproducir al abrir (el clic que abrió el modo es el gesto)
+  // Música: usa un solo audio. Pausa cualquier otra música de fondo que
+  // estuviera sonando (el botón flotante) para no duplicar el tema, y la
+  // reanuda al cerrar si estaba activa.
   useEffect(() => {
     const audio = audioRef.current;
+    const otros = Array.from(document.querySelectorAll('audio')).filter(
+      (a) => a !== audio
+    ) as HTMLAudioElement[];
+    const estabanSonando = otros.filter((a) => !a.paused);
+    otros.forEach((a) => a.pause());
+
     if (audio) {
       audio.volume = 0.6;
       audio.play().catch(() => {});
     }
     return () => {
       if (audio) audio.pause();
+      estabanSonando.forEach((a) => a.play().catch(() => {}));
     };
   }, []);
 
@@ -75,7 +84,7 @@ export function Slideshow({ photos, onClose }: SlideshowProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[300] flex items-center justify-center bg-black"
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black"
     >
       <audio ref={audioRef} src={musicaFondo} loop preload="auto" />
 
