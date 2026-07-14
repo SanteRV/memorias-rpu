@@ -42,6 +42,8 @@ const SCHEMA = `
     ON experiencias (departamento);
   CREATE INDEX IF NOT EXISTS idx_experiencias_created_at
     ON experiencias (created_at DESC);
+  ALTER TABLE experiencias
+    ADD COLUMN IF NOT EXISTS reacciones INTEGER NOT NULL DEFAULT 0;
 `;
 
 async function query(text, params) {

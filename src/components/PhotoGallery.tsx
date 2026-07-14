@@ -2,7 +2,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Image } from "./Image";
-import { X } from "lucide-react";
+import { X, Play } from "lucide-react";
+import { Slideshow } from "./Slideshow";
 import img1 from "../image/recuerdos/1.jpeg";
 import img2 from "../image/recuerdos/2.jpeg";
 import img3 from "../image/recuerdos/3.jpeg";
@@ -22,6 +23,7 @@ interface PhotoType {
 
 export function PhotoGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoType | null>(null);
+  const [showSlideshow, setShowSlideshow] = useState(false);
 
   // Cerrar modal con tecla ESC
   useEffect(() => {
@@ -116,6 +118,15 @@ export function PhotoGallery() {
           <p className="max-w-2xl mx-auto text-white/90 text-lg">
             Cada foto cuenta una historia. Revive con nosotros los momentos más especiales de nuestro intercambio.
           </p>
+          <motion.button
+            onClick={() => setShowSlideshow(true)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.96 }}
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 py-3 font-semibold text-[var(--color-primary)] shadow-lg transition-shadow hover:shadow-xl"
+          >
+            <Play size={20} fill="currentColor" />
+            Ver en presentación
+          </motion.button>
         </motion.div>
 
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 2, 768: 3 }}>
@@ -208,6 +219,16 @@ export function PhotoGallery() {
                 </motion.div>
               </motion.div>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Modo presentación (slideshow con música) */}
+        <AnimatePresence>
+          {showSlideshow && (
+            <Slideshow
+              photos={allPhotos.map((p) => ({ url: p.url, alt: p.alt }))}
+              onClose={() => setShowSlideshow(false)}
+            />
           )}
         </AnimatePresence>
       </div>

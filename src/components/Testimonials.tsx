@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Quote, MapPin, Loader2 } from "lucide-react";
+import { Quote, MapPin, Heart, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface Experiencia {
@@ -9,9 +9,22 @@ interface Experiencia {
   experiencia: string;
   foto_url: string;
   created_at: string;
+  reacciones?: number;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+
+// Guarda en el navegador los recuerdos a los que este usuario ya dio corazón
+const LIKED_KEY = 'rpu_liked';
+const getLiked = (): Set<number> => {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(LIKED_KEY) || '[]'));
+  } catch {
+    return new Set();
+  }
+};
+const saveLiked = (s: Set<number>) =>
+  localStorage.setItem(LIKED_KEY, JSON.stringify([...s]));
 
 // Array de gradientes para rotar entre las cards
 const GRADIENTS = [
@@ -30,10 +43,46 @@ const GRADIENTS = [
 export function Testimonials() {
   const [testimonials, setTestimonials] = useState<Experiencia[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [liked, setLiked] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetchTestimonials();
+    setLiked(getLiked());
   }, []);
+
+  const toggleLike = async (id: number) => {
+    const yaDio = liked.has(id);
+    const accion = yaDio ? 'unlike' : 'like';
+
+    // Actualización optimista (se ve al instante)
+    const nuevos = new Set(liked);
+    yaDio ? nuevos.delete(id) : nuevos.add(id);
+    setLiked(nuevos);
+    saveLiked(nuevos);
+    setTestimonials((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? { ...t, reacciones: Math.max(0, (t.reacciones || 0) + (yaDio ? -1 : 1)) }
+          : t
+      )
+    );
+
+    try {
+      const r = await fetch(`${API_URL}/experiencias/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion })
+      });
+      const data = await r.json();
+      if (data.success) {
+        setTestimonials((prev) =>
+          prev.map((t) => (t.id === id ? { ...t, reacciones: data.reacciones } : t))
+        );
+      }
+    } catch {
+      // si falla, se revierte al recargar; no molestamos al usuario
+    }
+  };
 
   const fetchTestimonials = async () => {
     try {
@@ -127,8 +176,8 @@ export function Testimonials() {
                       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white`}>
                         {testimonial.nombre.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <p className="font-bold leading-tight text-[var(--color-primary)]">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold leading-tight text-[var(--color-primary)] truncate">
                           {testimonial.nombre}
                         </p>
                         <div className="flex items-center gap-1 text-gray-500">
@@ -136,6 +185,25 @@ export function Testimonials() {
                           <span className="text-sm">{testimonial.departamento}</span>
                         </div>
                       </div>
+
+                      {/* Botón de corazón */}
+                      <motion.button
+                        onClick={() => toggleLike(testimonial.id)}
+                        whileTap={{ scale: 0.8 }}
+                        aria-label={liked.has(testimonial.id) ? 'Quitar me gusta' : 'Me gusta'}
+                        className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${
+                          liked.has(testimonial.id)
+                            ? 'bg-red-50 text-red-500'
+                            : 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500'
+                        }`}
+                      >
+                        <Heart
+                          size={18}
+                          strokeWidth={2.5}
+                          fill={liked.has(testimonial.id) ? 'currentColor' : 'none'}
+                        />
+                        {testimonial.reacciones ? testimonial.reacciones : ''}
+                      </motion.button>
                     </div>
                   </div>
                 </motion.div>

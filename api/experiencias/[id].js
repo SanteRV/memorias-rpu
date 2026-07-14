@@ -20,8 +20,8 @@ module.exports = async (req, res) => {
   const isDelete = req.method === 'DELETE';
   if (
     enforceRateLimit(req, res, {
-      name: isDelete ? 'exp-delete' : 'exp-read',
-      max: isDelete ? 20 : 60,
+      name: isDelete ? 'exp-delete' : req.method === 'POST' ? 'exp-like' : 'exp-read',
+      max: isDelete ? 20 : req.method === 'POST' ? 120 : 60,
       windowMs: 60 * 1000
     })
   ) {
@@ -29,6 +29,24 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // POST = reaccionar (like / unlike). Público, solo mueve el contador.
+    if (req.method === 'POST') {
+      const accion = req.body && req.body.accion;
+      const delta = accion === 'unlike' ? -1 : 1;
+      const result = await query(
+        'UPDATE experiencias SET reacciones = GREATEST(0, reacciones + $1) WHERE id = $2 RETURNING reacciones',
+        [delta, id]
+      );
+      if (result.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, message: 'Experiencia no encontrada' });
+      }
+      return res
+        .status(200)
+        .json({ success: true, reacciones: result.rows[0].reacciones });
+    }
+
     if (req.method === 'GET') {
       const result = await query('SELECT * FROM experiencias WHERE id = $1', [
         id
@@ -74,7 +92,7 @@ module.exports = async (req, res) => {
         .json({ success: true, message: 'Experiencia eliminada exitosamente' });
     }
 
-    res.setHeader('Allow', 'GET, DELETE');
+    res.setHeader('Allow', 'GET, POST, DELETE');
     return res
       .status(405)
       .json({ success: false, message: 'Método no permitido' });
