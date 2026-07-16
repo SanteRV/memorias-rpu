@@ -15,7 +15,7 @@ interface AwardCategory {
   winners: Winner[];
 }
 
-const awardsData: AwardCategory[] = [
+export const awardsData: AwardCategory[] = [
   {
     id: 1,
     title: "El/La más borracho",
@@ -274,6 +274,16 @@ const awardsData: AwardCategory[] = [
       { name: "Lewis", position: "gold" },
       { name: "Dénzel", position: "silver" },
       { name: "Ayrton", position: "bronze" }
+    ]
+  },
+  {
+    id: 27,
+    title: "Mejor Shippeo",
+    emoji: "💞",
+    winners: [
+      { name: "Pieyeli (Piero ❤️ Anyeli)", position: "gold" },
+      { name: "Lewis ❤️ Sheriff", position: "silver" },
+      { name: "Oscar ❤️ Ana", position: "bronze" }
     ]
   }
 ];

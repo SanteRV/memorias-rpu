@@ -21,6 +21,20 @@ interface PhotoType {
   isStatic: boolean;
 }
 
+// Fotos curadas del evento (exportadas también para el anuario imprimible)
+export const STATIC_PHOTOS: PhotoType[] = [
+  { url: img12, alt: "Almuerzo compartido en Ica", isStatic: true },
+  { url: img13, alt: "Paseo por el campus con antojos", isStatic: true },
+  { url: img1, alt: "Momentos inolvidables", isStatic: true },
+  { url: img2, alt: "Unidos por la amistad", isStatic: true },
+  { url: img3, alt: "Celebrando juntos", isStatic: true },
+  { url: img4, alt: "Compartiendo experiencias", isStatic: true },
+  { url: img5, alt: "Recuerdos que perduran", isStatic: true },
+  { url: img9, alt: "Lazos que nos unen", isStatic: true },
+  { url: img10, alt: "Diversidad y unidad", isStatic: true },
+  { url: img11, alt: "Un viaje compartido", isStatic: true }
+];
+
 export function PhotoGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoType | null>(null);
   const [showSlideshow, setShowSlideshow] = useState(false);
@@ -44,62 +58,7 @@ export function PhotoGallery() {
     };
   }, [selectedPhoto]);
 
-  // Fotos curadas del evento (las que sube la gente aparecen con su
-  // comentario en la sección de testimonios, para no perder el contexto).
-  const staticPhotos = [
-    {
-      url: img12,
-      alt: "Almuerzo compartido en Ica",
-      isStatic: true
-    },
-    {
-      url: img13,
-      alt: "Paseo por el campus con antojos",
-      isStatic: true
-    },
-    {
-      url: img1,
-      alt: "Momentos inolvidables",
-      isStatic: true
-    },
-    {
-      url: img2,
-      alt: "Unidos por la amistad",
-      isStatic: true
-    },
-    {
-      url: img3,
-      alt: "Celebrando juntos",
-      isStatic: true
-    },
-    {
-      url: img4,
-      alt: "Compartiendo experiencias",
-      isStatic: true
-    },
-    {
-      url: img5,
-      alt: "Recuerdos que perduran",
-      isStatic: true
-    },
-    {
-      url: img9,
-      alt: "Lazos que nos unen",
-      isStatic: true
-    },
-    {
-      url: img10,
-      alt: "Diversidad y unidad",
-      isStatic: true
-    },
-    {
-      url: img11,
-      alt: "Un viaje compartido",
-      isStatic: true
-    }
-  ];
-
-  const allPhotos = staticPhotos;
+  const allPhotos = STATIC_PHOTOS;
 
   return (
     <section id="galeria" className="py-20 px-6 bg-gradient-to-br from-[var(--color-primary)] via-blue-900 to-[var(--color-primary)]">

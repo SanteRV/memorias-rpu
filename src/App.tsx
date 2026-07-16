@@ -3,9 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { MotionConfig } from "motion/react";
 import { HomePage } from "./pages/HomePage";
 
-// La página de Awards se carga solo cuando se visita
+// Páginas secundarias: se cargan solo cuando se visitan
 const RPUAwardsPage = lazy(() =>
   import("./pages/RPUAwardsPage").then((m) => ({ default: m.RPUAwardsPage }))
+);
+const AnuarioLibro = lazy(() =>
+  import("./pages/AnuarioLibro").then((m) => ({ default: m.AnuarioLibro }))
 );
 
 export default function App() {
@@ -20,6 +23,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/awards" element={<RPUAwardsPage />} />
+            <Route path="/anuario" element={<AnuarioLibro />} />
           </Routes>
         </Suspense>
       </Router>

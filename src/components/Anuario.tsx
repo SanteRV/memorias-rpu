@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { GraduationCap, MapPin, Loader2, X, UserPlus, Camera, Upload, CheckCircle, AlertCircle, Mail, Send } from 'lucide-react';
+import { GraduationCap, MapPin, Loader2, X, UserPlus, Camera, Upload, CheckCircle, AlertCircle, Mail, Send, BookOpen } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 const MAX_SOURCE_SIZE = 15 * 1024 * 1024;
@@ -100,15 +101,24 @@ export function Anuario() {
             El anuario del intercambio. Cada carné es una persona que dejó su
             huella. ¡Agrega el tuyo!
           </p>
-          <motion.button
-            onClick={() => setFormOpen(true)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.96 }}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 py-3 font-semibold text-[var(--color-primary)] shadow-lg"
-          >
-            <UserPlus size={20} />
-            Únete al anuario
-          </motion.button>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <motion.button
+              onClick={() => setFormOpen(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 py-3 font-semibold text-[var(--color-primary)] shadow-lg"
+            >
+              <UserPlus size={20} />
+              Únete al anuario
+            </motion.button>
+            <Link
+              to="/anuario"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-accent)]/60 px-7 py-3 font-semibold text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent)]/10"
+            >
+              <BookOpen size={20} />
+              Ver el anuario 📖
+            </Link>
+          </div>
         </motion.div>
 
         {loading ? (
