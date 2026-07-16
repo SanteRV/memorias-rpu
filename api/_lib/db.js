@@ -58,6 +58,15 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS idx_perfiles_created_at
     ON perfiles (created_at DESC);
+  CREATE TABLE IF NOT EXISTS dedicatorias (
+    id SERIAL PRIMARY KEY,
+    perfil_id INTEGER NOT NULL REFERENCES perfiles(id) ON DELETE CASCADE,
+    de_nombre VARCHAR(100) NOT NULL,
+    mensaje VARCHAR(300) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE INDEX IF NOT EXISTS idx_dedicatorias_perfil
+    ON dedicatorias (perfil_id);
 `;
 
 async function query(text, params) {

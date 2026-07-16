@@ -22,7 +22,10 @@ module.exports = async (req, res) => {
         return;
       }
       const result = await query(
-        'SELECT * FROM perfiles ORDER BY created_at ASC'
+        `SELECT p.*,
+                (SELECT count(*)::int FROM dedicatorias d WHERE d.perfil_id = p.id) AS dedicatorias
+         FROM perfiles p
+         ORDER BY p.created_at ASC`
       );
       return res.status(200).json({ success: true, data: result.rows });
     }

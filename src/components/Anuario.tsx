@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GraduationCap, MapPin, Loader2, X, UserPlus, Camera, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { GraduationCap, MapPin, Loader2, X, UserPlus, Camera, Upload, CheckCircle, AlertCircle, Mail, Send } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 const MAX_SOURCE_SIZE = 15 * 1024 * 1024;
@@ -13,6 +13,13 @@ interface Perfil {
   departamento: string;
   frase: string;
   foto_url: string | null;
+  dedicatorias?: number;
+}
+
+interface Dedicatoria {
+  id: number;
+  de_nombre: string;
+  mensaje: string;
 }
 
 const DEPARTAMENTOS = [
@@ -138,6 +145,11 @@ export function Anuario() {
                       {p.nombre.charAt(0).toUpperCase()}
                     </div>
                   )}
+                  {(p.dedicatorias ?? 0) > 0 && (
+                    <span className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/45 px-2 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
+                      <Mail size={11} /> {p.dedicatorias}
+                    </span>
+                  )}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                     <p className="font-bold leading-tight text-white truncate">{p.nombre}</p>
                     <p className="flex items-center gap-1 text-xs text-white/80">
@@ -166,7 +178,7 @@ export function Anuario() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 30 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl"
+              className="relative max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-3xl bg-white shadow-2xl"
             >
               <button
                 onClick={() => setSeleccionado(null)}
@@ -175,7 +187,7 @@ export function Anuario() {
               >
                 <X size={20} />
               </button>
-              <div className="aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200">
+              <div className="aspect-[3/4] w-full shrink-0 overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200">
                 {seleccionado.foto_url ? (
                   <img src={seleccionado.foto_url} alt={seleccionado.nombre} className="h-full w-full object-cover" />
                 ) : (
@@ -197,6 +209,8 @@ export function Anuario() {
                 <p className="mt-4 border-l-4 border-[var(--color-accent)] pl-3 italic text-[var(--color-primary)]">
                   “{seleccionado.frase}”
                 </p>
+
+                <Dedicatorias perfilId={seleccionado.id} nombre={seleccionado.nombre} />
               </div>
             </motion.div>
           </motion.div>
@@ -353,5 +367,115 @@ function FormAnuario({ onClose, onCreado }: { onClose: () => void; onCreado: (p:
         </button>
       </motion.form>
     </motion.div>
+  );
+}
+
+// ─── Libro de dedicatorias del perfil ───────────────────────────────────────
+function Dedicatorias({ perfilId, nombre }: { perfilId: number; nombre: string }) {
+  const [lista, setLista] = useState<Dedicatoria[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [deNombre, setDeNombre] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setCargando(true);
+    fetch(`${API_URL}/perfiles/${perfilId}/dedicatorias`)
+      .then((r) => r.json())
+      .then((d) => { if (d.success) setLista(d.data); })
+      .catch(() => {})
+      .finally(() => setCargando(false));
+  }, [perfilId]);
+
+  const enviar = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (deNombre.trim().length < 2 || mensaje.trim().length < 5) {
+      setError('Pon tu nombre y un mensaje de al menos 5 letras');
+      return;
+    }
+    setEnviando(true);
+    setError('');
+    try {
+      const r = await fetch(`${API_URL}/perfiles/${perfilId}/dedicatorias`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ de_nombre: deNombre, mensaje })
+      });
+      const d = await r.json();
+      if (d.success) {
+        setLista((prev) => [...prev, d.data]);
+        setDeNombre('');
+        setMensaje('');
+      } else {
+        setError(d.message || 'No se pudo enviar');
+      }
+    } catch {
+      setError('Error de conexión');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  const primerNombre = nombre.split(' ')[0];
+
+  return (
+    <div className="mt-6 border-t border-gray-200 pt-5">
+      <p className="mb-3 flex items-center gap-2 font-bold text-[var(--color-primary)]">
+        <Mail size={18} className="text-[var(--color-accent)]" />
+        Dedicatorias
+      </p>
+
+      {cargando ? (
+        <div className="flex justify-center py-4">
+          <Loader2 className="animate-spin text-gray-400" size={22} />
+        </div>
+      ) : lista.length === 0 ? (
+        <p className="mb-4 text-sm text-gray-500">
+          Nadie le ha escrito todavía. ¡Déjale unas palabras a {primerNombre}!
+        </p>
+      ) : (
+        <div className="mb-4 max-h-52 space-y-3 overflow-y-auto pr-1">
+          {lista.map((d) => (
+            <div key={d.id} className="rounded-xl bg-gray-50 p-3">
+              <p className="text-sm leading-relaxed text-[var(--color-primary)]">
+                {d.mensaje}
+              </p>
+              <p className="mt-1 text-xs font-semibold text-gray-500">
+                — {d.de_nombre}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={enviar} className="space-y-2">
+        <input
+          value={deNombre}
+          onChange={(e) => setDeNombre(e.target.value)}
+          maxLength={100}
+          placeholder="Tu nombre"
+          className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+        />
+        <div className="flex gap-2">
+          <input
+            value={mensaje}
+            onChange={(e) => setMensaje(e.target.value)}
+            maxLength={300}
+            placeholder={`Escríbele algo a ${primerNombre}...`}
+            className="min-w-0 flex-1 rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+          />
+          <button
+            type="submit"
+            disabled={enviando || deNombre.trim().length < 2 || mensaje.trim().length < 5}
+            aria-label="Enviar dedicatoria"
+            className="flex shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent)] px-4 text-[var(--color-primary)] transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {enviando ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+          </button>
+        </div>
+        {error && <p className="text-xs text-red-500">{error}</p>}
+      </form>
+    </div>
   );
 }
