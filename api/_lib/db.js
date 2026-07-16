@@ -46,6 +46,18 @@ const SCHEMA = `
     ADD COLUMN IF NOT EXISTS reacciones INTEGER NOT NULL DEFAULT 0;
   ALTER TABLE experiencias
     ADD COLUMN IF NOT EXISTS foto_public_id TEXT;
+  CREATE TABLE IF NOT EXISTS perfiles (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    universidad VARCHAR(120) NOT NULL,
+    departamento VARCHAR(60) NOT NULL,
+    frase VARCHAR(200) NOT NULL,
+    foto_url TEXT,
+    foto_public_id TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE INDEX IF NOT EXISTS idx_perfiles_created_at
+    ON perfiles (created_at DESC);
 `;
 
 async function query(text, params) {

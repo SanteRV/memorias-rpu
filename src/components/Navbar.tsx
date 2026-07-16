@@ -5,6 +5,7 @@ import { Menu, X, Trophy } from 'lucide-react';
 
 const LINKS = [
   { href: '#inicio', label: 'Inicio' },
+  { href: '#anuario', label: 'La Promo' },
   { href: '#galeria', label: 'Galería' },
   { href: '#mapa', label: 'Mapa' },
   { href: '#comparte', label: 'Comparte' },

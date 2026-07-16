@@ -4,6 +4,7 @@ import { Introduction } from "../components/Introduction";
 import { StatsStrip } from "../components/StatsStrip";
 import { PhotoGallery } from "../components/PhotoGallery";
 import { PeruMap } from "../components/PeruMap";
+import { Anuario } from "../components/Anuario";
 import { UploadPhoto } from "../components/UploadPhoto";
 import { Testimonials } from "../components/Testimonials";
 import { Footer } from "../components/Footer";
@@ -16,6 +17,7 @@ export function HomePage() {
       <Hero />
       <Introduction />
       <StatsStrip />
+      <Anuario />
       <PhotoGallery />
       <PeruMap />
       <UploadPhoto />

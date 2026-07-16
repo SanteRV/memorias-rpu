@@ -12,10 +12,9 @@ const {
 module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
-      // Límite generoso para lectura (evita scraping masivo)
       if (
         enforceRateLimit(req, res, {
-          name: 'exp-read',
+          name: 'perfil-read',
           max: 60,
           windowMs: 60 * 1000
         })
@@ -23,17 +22,17 @@ module.exports = async (req, res) => {
         return;
       }
       const result = await query(
-        'SELECT * FROM experiencias ORDER BY created_at DESC'
+        'SELECT * FROM perfiles ORDER BY created_at ASC'
       );
       return res.status(200).json({ success: true, data: result.rows });
     }
 
     if (req.method === 'POST') {
-      // Límite estricto para escritura: 10 publicaciones por hora e IP
+      // Máximo 5 perfiles por hora e IP (normalmente cada quien crea 1)
       if (
         enforceRateLimit(req, res, {
-          name: 'exp-write',
-          max: 10,
+          name: 'perfil-write',
+          max: 5,
           windowMs: 60 * 60 * 1000
         })
       ) {
@@ -46,10 +45,9 @@ module.exports = async (req, res) => {
         rawBody
       );
 
-      // Registra el motivo de un rechazo (sin datos personales) para diagnóstico
       const rejectPost = (message, motivo) => {
         console.warn(
-          `[POST 400] ${motivo} | archivo=${fileMeta ? `${fileMeta.filename} (${fileMeta.mimeType})` : 'sin foto'} | nombreLen=${(fields.nombre || '').length} | expLen=${(fields.experiencia || '').length}`
+          `[PERFIL 400] ${motivo} | archivo=${fileMeta ? `${fileMeta.filename} (${fileMeta.mimeType})` : 'sin foto'}`
         );
         return res.status(400).json({ success: false, message });
       };
@@ -62,22 +60,23 @@ module.exports = async (req, res) => {
       }
       if (file && file.invalid) {
         return rejectPost(
-          'Esa foto no tiene un formato compatible. Usa JPG, PNG o WEBP (si es de iPhone, actívalo en Ajustes › Cámara › Formatos › "Más compatible", o toma captura de pantalla).',
+          'Esa foto no tiene un formato compatible. Usa JPG, PNG o WEBP.',
           'tipo/extension no permitido'
         );
       }
 
-      let { nombre, departamento, experiencia } = fields;
-      if (!nombre || !departamento || !experiencia) {
+      let { nombre, universidad, departamento, frase } = fields;
+      if (!nombre || !universidad || !departamento || !frase) {
         return rejectPost(
-          'Faltan campos requeridos: nombre, departamento y experiencia',
+          'Faltan campos: nombre, universidad, departamento y frase',
           'campos faltantes'
         );
       }
 
       nombre = sanitizeInput(nombre);
+      universidad = sanitizeInput(universidad);
       departamento = sanitizeInput(departamento);
-      experiencia = sanitizeInput(experiencia);
+      frase = sanitizeInput(frase);
 
       if (nombre.length < 3 || nombre.length > 100) {
         return rejectPost(
@@ -85,10 +84,19 @@ module.exports = async (req, res) => {
           'longitud de nombre'
         );
       }
-      if (experiencia.length < 10 || experiencia.length > 500) {
+      if (universidad.length < 2 || universidad.length > 120) {
         return rejectPost(
-          'La experiencia debe tener entre 10 y 500 caracteres',
-          'longitud de experiencia'
+          'La universidad debe tener entre 2 y 120 caracteres',
+          'longitud de universidad'
+        );
+      }
+      if (departamento.length > 60) {
+        return rejectPost('Departamento inválido', 'departamento');
+      }
+      if (frase.length < 5 || frase.length > 200) {
+        return rejectPost(
+          'La frase debe tener entre 5 y 200 caracteres',
+          'longitud de frase'
         );
       }
 
@@ -103,13 +111,11 @@ module.exports = async (req, res) => {
       let foto_public_id = null;
       if (file) {
         if (cloudinaryConfigurado()) {
-          // Nuevo: Cloudinary (más espacio, CDN y optimización)
           const subida = await subirImagen(file.buffer);
           foto_url = subida.secure_url;
           foto_public_id = subida.public_id;
         } else {
-          // Respaldo: Vercel Blob (mientras no estén las claves de Cloudinary)
-          const blob = await put(`fotos/experiencia${file.ext}`, file.buffer, {
+          const blob = await put(`perfiles/foto${file.ext}`, file.buffer, {
             access: 'public',
             contentType: file.mimeType,
             addRandomSuffix: true
@@ -119,13 +125,13 @@ module.exports = async (req, res) => {
       }
 
       const result = await query(
-        'INSERT INTO experiencias (nombre, departamento, experiencia, foto_url, foto_public_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [nombre, departamento, experiencia, foto_url, foto_public_id]
+        'INSERT INTO perfiles (nombre, universidad, departamento, frase, foto_url, foto_public_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [nombre, universidad, departamento, frase, foto_url, foto_public_id]
       );
 
       return res.status(201).json({
         success: true,
-        message: 'Experiencia compartida exitosamente',
+        message: '¡Bienvenido(a) al anuario!',
         data: result.rows[0]
       });
     }
@@ -135,7 +141,7 @@ module.exports = async (req, res) => {
       .status(405)
       .json({ success: false, message: 'Método no permitido' });
   } catch (error) {
-    console.error('Error en /api/experiencias:', error);
+    console.error('Error en /api/perfiles:', error);
     return res
       .status(500)
       .json({ success: false, message: 'Error interno del servidor' });
